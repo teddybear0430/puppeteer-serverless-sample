@@ -3,7 +3,7 @@ import { IS_LOCAL } from './config';
 const chromium = require('chrome-aws-lambda');
 
 export const main = async (searchWord: string) => {
-  let result = null;
+  let result: string | null = null;
   let browser = null;
 
   try {
@@ -49,18 +49,31 @@ export const main = async (searchWord: string) => {
     await page.waitForTimeout(500);
     await page.keyboard.press('Enter');
 
-    // 検索成功したときにある要素
-    // 検索失敗したときの条件が必要になりそう
-    await page.waitForSelector('#top_nav');
-    console.log('Success!');
+    // 検索成功したときに存在する要素
+    const getResultElement = await page.waitForSelector('#result-stats', {
+      timeout: 2000
+    })
+    .catch((er) => {
+      // MAX20秒待っても要素が確認できない場合は例外として処理
+      console.info(er);
+      console.info(`${searchWord}に一致する情報は見つかりませんでした。`);
 
-    const title = await page.title();
-    result = title;
+      return result;
+    });
+
+    if (getResultElement) {
+      // titleタグを取得
+      const title = await page.title();
+      result = title;
+
+      return result;
+    }
+
   } catch(er) {
-    return console.error(er);
+    console.error(er);
+
+    return undefined;
   } finally {
     if (browser !== null) await browser.close();
   }
-
-  return result;
 };

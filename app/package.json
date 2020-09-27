@@ -4,7 +4,8 @@
   "description": "Serverless webpack example using Typescript",
   "main": "handler.js",
   "scripts": {
-    "local:invoke": "sls invoke local -f puppeteerSls -p events/event.json"
+    "local:invoke": "sls invoke local -f puppeteerSls -p events/event.json",
+    "local:invoke:failEvent": "sls invoke local -f puppeteerSls -p events/failEvent.json"
   },
   "dependencies": {
     "chrome-aws-lambda": "^5.3.1",
