@@ -25,18 +25,25 @@ export const main = async (searchWord: string) => {
 
     // MEMO: goto()
     // 引数に表示したいページのURLを指定
-    page.goto('https://www.google.co.jp/', {
+    page.goto('https://www.google.co.jp', {
       // MEMO: ページ内のDOMツリーが完全に構築されるまで待機
       waitUntil: 'domcontentloaded'
     });
-    console.log('browser start');
+    console.info('browser start');
+
+    // 検索窓のinput要素のクラス
+    const searchBox = '.gLFyf';
 
     // MEMO: waitForSelector()
-    // 要素が出現するまで待つ
-    await page.waitForSelector('input[title="検索"]');
+    // input要素が出現するまで待つ
+    await page.waitForSelector(searchBox);
+    console.info('Chromeのinput要素を確認');
 
-    // keydown、keypress、keyupイベントで送信する要素の指定？
-    await page.type('input[title="検索"]', searchWord);
+    // inputをフォーカス
+    await page.focus(searchBox);
+
+    // keydown、keypress、keyupイベントで送信する要素(input)の指定？
+    await page.type(searchBox, searchWord);
 
     // 入力後5秒待って、エンターを押す
     await page.waitForTimeout(500);
