@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  puppeteer_serverless_sample:
+    container_name: puppeteer_serverless_sample
+    tty: true
+    build: ./node
+    volumes:
+      - ./app:/app
+    ports:
+      - 3000:3000

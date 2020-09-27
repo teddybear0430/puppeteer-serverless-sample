@@ -1,0 +1,15 @@
+service: sample
+
+provider:
+  name: aws
+  region: us-east-1
+  runtime: nodejs12.x
+  memorySize: 512
+  timeout: 60
+
+plugins:
+  - serverless-webpack
+
+functions:
+  puppeteerSls:
+    handler: src/handler.handler
