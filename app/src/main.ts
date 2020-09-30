@@ -1,26 +1,14 @@
-import { IS_LOCAL } from './config';
-
-const chromium = require('chrome-aws-lambda');
+import { BrowserSetting } from './browser';
+import { Browser } from 'puppeteer';
 
 export const main = async (searchWord: string) => {
   let result: string | null = null;
-  let browser = null;
+  let browser: Browser = null;
 
   try {
-    browser = await chromium.puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      // MEMO: ローカル環境の時は、Dockerコンテナ内のchromiumを使用するようにする
-      executablePath: IS_LOCAL ? '/usr/bin/chromium-browser' : await chromium.executablePath,
-      // MEMO: ローカル環境の時は、Dockerコンテナ内のchromiumを使用するようにする
-      headless: IS_LOCAL ? IS_LOCAL : chromium.headless,
-    });
+    const browserSetting = new BrowserSetting();
 
-    // MEMO: 日本語フォトの読み込み
-    // Chromiumを起動する前に、URLまたはローカルファイルパスをカスタムフォントフェースに渡すことで、
-    // Lambda上で日本語フォントが使えるようになる？
-    await chromium.font('https://raw.githack.com/googlei18n/noto-cjk/master/NotoSansJP-Black.otf');
-
+    browser = await browserSetting.initBrowser();
     const page = await browser.newPage();
 
     // MEMO: goto()
@@ -46,7 +34,7 @@ export const main = async (searchWord: string) => {
     await page.type(searchBox, searchWord);
 
     // 入力後5秒待って、エンターを押す
-    await page.waitForTimeout(500);
+    await page.waitFor(500);
     await page.keyboard.press('Enter');
 
     // 検索成功したときに存在する要素
@@ -69,6 +57,7 @@ export const main = async (searchWord: string) => {
       return result;
     }
 
+    await browser.close();
   } catch(er) {
     console.error(er);
 
