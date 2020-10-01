@@ -6,8 +6,7 @@ export interface LambdaEvent {
 export interface resultObj {
   searchResult: string;
   siteInfo: string;
-  // date: string;
-  // pageTitle: string;
-  // pageUrl: string;
-  // description: string;
+  pageTitle: string;
+  pageUrl: string;
+  description: string;
 };
