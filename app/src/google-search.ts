@@ -13,18 +13,18 @@ export const googleSearch = async (
   console.info('browser start');
 
   // 検索窓のinput要素のクラス
-  const searchBox = '.gLFyf';
+  const inputClassName = '.gLFyf';
 
   // MEMO: waitForSelector()
   // 要素が出現するまで待つ
-  await page.waitForSelector(searchBox);
+  await page.waitForSelector(inputClassName);
   console.info('Chromeのinput要素を確認');
 
   // inputをフォーカス
-  await page.focus(searchBox);
+  await page.focus(inputClassName);
 
   // keydown、keypress、keyupイベントで送信する要素(input)の指定？
-  await page.type(searchBox, searchWord);
+  await page.type(inputClassName, searchWord);
 
   // 入力後5秒待って、エンターを押す
   await page.waitFor(500);
