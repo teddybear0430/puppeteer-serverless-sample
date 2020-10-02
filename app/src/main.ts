@@ -9,7 +9,12 @@ const getResultElementText = async (
 ) => {
   const element = await page.waitForSelector(className);
   const textContent = await element.getProperty('textContent');
-  const text = (await textContent.jsonValue());
+  const text = (await textContent.jsonValue()) as string;
+
+  if (className.indexOf('TbwUpd') !== -1) {
+    const topPageSiteUrl = text.match(/.+(?= ›)/g)[0];
+    return topPageSiteUrl;
+  }
 
   return text;
 }
